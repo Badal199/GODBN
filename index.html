@@ -3,32 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMALL BIG Pattern Predictor</title>
     <link rel="stylesheet" href="styles.css">
+    <title>Income Prediction Results</title>
 </head>
 <body>
     <div class="container">
-        <h1>Upcoming Results Predictor</h1>
+        <h1>Upcoming Results Prediction</h1>
         <div class="timer">
-            <h2 id="periodNumber">Period Number: 0</h2>
-            <h2 id="countdown">Timer: 00:00</h2>
+            <span id="period30s"></span>
+            <span id="timer30s"></span>
         </div>
-        <div class="current-result">
-            <h2 id="currentResult">Current Result: </h2>
+        <div class="result-box" id="resultBox">
+            <h2 id="result">Result: </h2>
         </div>
-        <div class="result-table">
-            <table id="resultTable">
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody id="resultBody">
-                    <!-- Results will be injected here -->
-                </tbody>
-            </table>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Period Number</th>
+                    <th>Prediction</th>
+                </tr>
+            </thead>
+            <tbody id="resultHistory">
+            </tbody>
+        </table>
     </div>
     <script src="script.js"></script>
 </body>

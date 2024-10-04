@@ -1,49 +1,42 @@
-let currentPeriod = 0;
-const results = ["SMALL", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "BIG"];
-let currentResultIndex = 0;
+const resultBox = document.getElementById("resultBox");
+const resultText = document.getElementById("result");
+const period30s = document.getElementById("period30s");
+const timer30s = document.getElementById("timer30s");
+const resultHistory = document.getElementById("resultHistory");
 
-const periodNumberElement = document.getElementById("periodNumber");
-const countdownElement = document.getElementById("countdown");
-const currentResultElement = document.getElementById("currentResult");
-const resultBody = document.getElementById("resultBody");
-
-function updateResults() {
-    // Display the current result
-    currentResultElement.innerText = `Current Result: ${results[currentResultIndex]}`;
-
-    // Create a new row for the table
-    const resultRow = document.createElement("tr");
-    resultRow.innerHTML = `<td>${currentPeriod}</td><td>${results[currentResultIndex]}</td>`;
-    resultBody.appendChild(resultRow);
-    
-    // Move to the next result index
-    currentResultIndex = (currentResultIndex + 1) % results.length;
-}
+let periodNumber = 0; // Keep track of the current period
+const pattern = ["SMALL", "SMALL", "BIG", "SMALL", "BIG"]; // Define the pattern
+let timer;
 
 function startTimer() {
-    setInterval(() => {
-        currentPeriod++;
-        
-        // Update Period Number
-        periodNumberElement.innerText = `Period Number: ${currentPeriod}`;
-        
-        // Show Result for the Period
-        updateResults();
-        
-        // Reset the countdown
-        let remainingSeconds = 60;
-        const countdownInterval = setInterval(() => {
-            if (remainingSeconds <= 0) {
-                clearInterval(countdownInterval);
-                return;
-            }
-            remainingSeconds--;
-            const minutes = Math.floor(remainingSeconds / 60);
-            const seconds = remainingSeconds % 60;
-            countdownElement.innerText = `Timer: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }, 1000);
-    }, 60000); // Update every minute
+    timer = setInterval(() => {
+        const now = new Date();
+        const seconds = now.getSeconds();
+        const remainingSeconds = 30 - (seconds % 30);
+        const minutes = now.getMinutes();
+        const totalMinutes = now.getHours() * 60 + minutes;
+
+        // Update period number for 30-second interval
+        periodNumber = Math.floor(totalMinutes * 2 + (seconds >= 30 ? 1 : 0));
+        period30s.innerText = `Period: ${new Date().toISOString().slice(0, 10).replace(/-/g, '')}30${String(periodNumber).padStart(3, '0')}`;
+
+        // Update timer in format "  x x  :  x x" for 30-second interval
+        const formattedTime = String.format("  %02d  :  %02d", 0, remainingSeconds).replaceAll("(?<=\\d)(?=\\d)", " ");
+        timer30s.innerText = formattedTime;
+
+        // Show random result based on the current period number
+        if (remainingSeconds === 30) { // Trigger on the next period
+            const result = pattern[periodNumber % pattern.length];
+            resultText.innerText = `Result: ${result}`;
+            addResultToHistory(periodNumber, result);
+        }
+    }, 1000); // Update every second
 }
 
-// Start the timer when the page loads
+function addResultToHistory(period, result) {
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `<td>${String(period).padStart(3, '0')}</td><td>${result}</td>`;
+    resultHistory.appendChild(newRow);
+}
+
 window.onload = startTimer;
